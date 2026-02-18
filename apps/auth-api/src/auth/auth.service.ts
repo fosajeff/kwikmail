@@ -52,10 +52,16 @@ export class AuthService {
   }
 
   private sign(userId: string, email: string) {
-    const payload = { sub: userId, email };
+    const payload = {
+      sub: userId,
+      email,
+    };
 
     return {
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '7d',
+        secret: process.env.JWT_SECRET,
+      }),
     };
   }
 }
