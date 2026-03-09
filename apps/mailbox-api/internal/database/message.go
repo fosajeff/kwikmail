@@ -36,12 +36,17 @@ func (m *MessageModel) Insert(message *Message) error {
 	return err
 }
 
-func (m *MessageModel) GetByMailboxID(mailboxID string) ([]*Message, error) {
+func (m *MessageModel) GetByMailboxAddress(mailBoxAddress string) ([]*Message, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
+	mailBoxId, err := m.GetMailBoxIdByAddress(mailBoxAddress)
+	if err != nil {
+		return nil, err
+	}
+
 	query := "SELECT * FROM messages WHERE mailbox_id = $1"
-	rows, err := m.DB.QueryContext(ctx, query, mailboxID)
+	rows, err := m.DB.QueryContext(ctx, query, mailBoxId)
 	if err != nil {
 		return nil, err
 	}
@@ -64,4 +69,17 @@ func (m *MessageModel) GetByMailboxID(mailboxID string) ([]*Message, error) {
 	}
 
 	return messages, nil
+}
+
+func (m *MessageModel) GetMailBoxIdByAddress(mailBoxAddress string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var mailBoxId string
+	err := m.DB.QueryRowContext(ctx, "SELECT id FROM mailboxes WHERE address = $1", mailBoxAddress).Scan(&mailBoxId)
+	if err != nil {
+		return "", err
+	}
+
+	return mailBoxId, nil
 }

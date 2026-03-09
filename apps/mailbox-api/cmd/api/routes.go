@@ -31,9 +31,12 @@ func (app *application) routes() http.Handler {
 	{
 		v1.POST("/mailboxes", app.createMailbox)
 		v1.GET("/mailboxes", app.getMailboxes)
-		v1.GET("/mailboxes/:id/messages", app.getMailboxMessages)
-		v1.POST("/mailboxes/:id/messages", app.createMailboxMessage)
+		v1.GET("/mailboxes/:address/messages", app.getMailboxMessages)
 	}
 
+	internal := g.Group("/internal")
+	{
+		internal.POST("/messages", app.createMailboxMessage)
+	}
 	return g
 }

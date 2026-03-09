@@ -65,13 +65,13 @@ func (m *MailBoxModel) GetAll(userId string) ([]*Mailbox, error) {
 	return mailboxes, nil
 }
 
-func (m *MailBoxModel) UpdateLastActivity(mailboxId string) error {
+func (m *MailBoxModel) UpdateLastActivity(mailboxAddress string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	now := time.Now().Format(time.RFC3339)
-	query := "UPDATE mailboxes SET last_activity_at = $1 WHERE id = $2"
+	query := "UPDATE mailboxes SET last_activity_at = $1 WHERE address = $2"
 
-	_, err := m.DB.ExecContext(ctx, query, now, mailboxId)
+	_, err := m.DB.ExecContext(ctx, query, now, mailboxAddress)
 	return err
 }
