@@ -8,15 +8,15 @@ import (
 )
 
 func (app *application) getMailboxMessages(c *gin.Context) {
-	id := c.Param("id")
+	mailBoxID := c.Param("id")
 
 	// Update last activity timestamp
-	if err := app.models.Mailbox.UpdateLastActivity(id); err != nil {
+	if err := app.models.Mailbox.UpdateLastActivity(mailBoxID); err != nil {
 		// Log error but don't fail the request
 		c.Error(err)
 	}
 
-	messages, err := app.models.Message.GetByMailboxID(id)
+	messages, err := app.models.Message.GetByMailboxID(mailBoxID)
 
 	if messages == nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Mailbox ID not provided"})
@@ -30,13 +30,16 @@ func (app *application) getMailboxMessages(c *gin.Context) {
 	c.JSON(http.StatusOK, messages)
 }
 
-func (app *application) ingestMail(c *gin.Context) {
+func (app *application) createMailboxMessage(c *gin.Context) {
 	var message database.Message
+	mailboxID := c.Param("id")
 
 	if err := c.ShouldBindJSON(&message); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	message.MailBoxId = mailboxID
 
 	err := app.models.Message.Insert(&message)
 

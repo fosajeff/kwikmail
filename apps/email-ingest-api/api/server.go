@@ -16,7 +16,7 @@ func (app *application) serve() error {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	log.Printf("Email service is running on PORT %d", app.port)
+	log.Printf("Email ingest service is running on PORT %d", app.port)
 
 	return server.ListenAndServe()
 }

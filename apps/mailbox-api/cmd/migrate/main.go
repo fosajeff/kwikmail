@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"mailbox-api/internal/env"
 	"os"
 
 	"database/sql"
@@ -19,7 +20,11 @@ func main() {
 
 	direction := os.Args[1]
 
-	db, err := sql.Open("postgres", "postgres://kwikmail:kwikmail@localhost:5433/kwikmail?sslmode=disable")
+	DB_NAME := env.GetEnvString("DB_NAME", "kwikmail")
+	DB_USERNAME := env.GetEnvString("DB_USERNAME", "kwikmail")
+	DB_PASSWORD := env.GetEnvString("DB_PASSWORD", "kwikmail")
+
+	db, err := sql.Open("postgres", "postgres://"+DB_USERNAME+":"+DB_PASSWORD+"@localhost:5433/"+DB_NAME+"?sslmode=disable")
 	if err != nil {
 		log.Fatal("An error occurred while opening the database:", err)
 	}

@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(process.env.PORT ?? 3000, () =>
-    console.log(`Auth-Service is running on port ${process.env.PORT ?? 3000}`),
+    console.log(`Auth service is running on port ${process.env.PORT ?? 3000}`),
   );
 }
 bootstrap();
